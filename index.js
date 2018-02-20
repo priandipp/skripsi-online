@@ -1,5 +1,12 @@
 import express from 'express';
+import models from './models';
 
 const app = express();
 
-app.listen(8000);
+models.sequelize
+  .sync({
+    force: true
+  })
+  .then(() => {
+    app.listen(8000);
+  });
