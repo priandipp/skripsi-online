@@ -8,5 +8,11 @@ models.sequelize
     force: true
   })
   .then(() => {
-    app.listen(8000);
+    app.listen(8000, err => {
+      if(err){
+        console.error(err);
+      }else{
+        console.log("Server is running ...");
+      }
+    });
   });
