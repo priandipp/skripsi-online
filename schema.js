@@ -13,5 +13,6 @@ export default `
 
     type Query {
         hi: String
+        allMahasiswa: [Mahasiswa]
     }
 `;
