@@ -5,7 +5,9 @@ const sequelize = new Sequelize('skripsi_online', 'root', '', {
 });
 
 const models = {
-  User: sequelize.import('./mahasiswa')
+  Mahasiswa: sequelize.import('./mahasiswa'),
+  Pegawai: sequelize.import('./pegawai'),
+  Type: sequelize.import('./type')
 };
 
 Object.keys(models).forEach(modelName => {
