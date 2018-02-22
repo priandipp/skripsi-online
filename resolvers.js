@@ -7,11 +7,11 @@ export default {
       return models.Mahasiswa.findOne({ where: { nim } });
     },
 
-    allDosen: (parent, args, { models }, info) =>
+    allPegawai: (parent, args, { models }, info) =>
       models.Pegawai.findAll({
         include: [models.Type]
       }),
-    getDosen: (parent, args, { models }, info) => {
+    getPegawai: (parent, args, { models }, info) => {
       const { nip } = args;
       return models.Pegawai.findOne({
         where: {
@@ -35,7 +35,9 @@ export default {
         where: {
           nim
         }
-      }).then(() => Object.assign(mahasiswa, { deleted: true }));
+      })
+        .then(() => Object.assign(mahasiswa, { deleted: true }))
+        .catch(err => Object.assign(mahasiswa, { deleted: false }));
 
       return result;
     },
@@ -47,6 +49,23 @@ export default {
           where: { nip },
           include: [models.Type]
         });
+      }),
+    deletePegawai: async (parent, args, { models }, info) => {
+      const { nip } = args;
+
+      const pegawai = await models.Pegawai.findOne({
+        where: { nip }
+      });
+
+      const result = await models.Pegawai.destroy({
+        where: {
+          nip
+        }
       })
+        .then(() => Object.assign(pegawai, { deleted: true }))
+        .catch(err => Object.assign(pegawai, { deleted: false }));
+
+      return result;
+    }
   }
 };

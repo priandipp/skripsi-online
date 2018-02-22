@@ -3,14 +3,15 @@ export default `
         allMahasiswa: [Mahasiswa]
         getMahasiswa(nim: String!): Mahasiswa
         
-        allDosen: [Dosen]
-        getDosen(nip: Int): Dosen
+        allPegawai: [Pegawai]
+        getPegawai(nip: Int): Pegawai
     }
     type Mutation {
        createMahasiswa(nim: String!, nama: String!, password: String!, profile_picture: String, allowedToSubmit:Boolean): Mahasiswa!
        deleteMahasiswa(nim: String!): Mahasiswa!
 
-       createPegawai(nip: String!, nama: String!, password: String!, profile_picture: String, type_id: Int!): Dosen!
+       createPegawai(nip: String!, nama: String!, password: String!, profile_picture: String, type_id: Int!): Pegawai!
+       deletePegawai(nim: String!): Pegawai!
     }
 
     type Mahasiswa {
@@ -22,7 +23,7 @@ export default `
         deleted: Boolean
     }
 
-    type Dosen {
+    type Pegawai {
         nip: String
         nama: String
         password: String
