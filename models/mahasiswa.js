@@ -5,18 +5,28 @@ export default (sequelize, DataTypes) => {
     'mahasiswa',
     {
       nim: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(9),
         primaryKey: true,
         unique: true,
         validate: {
           len: {
             args: [9],
-            msg: 'Masukkan NIM yang valid'
+            msg: 'NIM Harus terdiri dari 9 karakter'
+          },
+          is: {
+            args: /[a-z][0-9][a-z]([0-9][0-9]+)/i,
+            msg: 'Masukkan NIM yang valid. contoh: F1E115040'
           }
         }
       },
       nama: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING(40),
+        validate: {
+          len: {
+            args: [10, 40],
+            msg: 'Nama harus memiliki 10-40 karakter'
+          }
+        }
       },
       password: {
         type: DataTypes.STRING

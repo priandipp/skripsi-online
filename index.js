@@ -31,8 +31,7 @@ app.use('/graphiql', graphiqlExpress({ endpointURL: graphqlEndpoint }));
 
 models.sequelize
   .sync({
-    force: true,
-    underscored: true
+    force: true
   })
   .then(() => {
     models.Mahasiswa.create({
@@ -42,7 +41,7 @@ models.sequelize
     });
 
     models.Pegawai.create({
-      nip: '01889374',
+      nip: '018893749018893749',
       nama: 'Daniel Joko',
       password: 'supersecret',
       type_id: 1
@@ -53,11 +52,28 @@ models.sequelize
     });
 
     app.get('/', (req, res) => {
-      models.Type.findAll({
-        include: [models.Pegawai]
-      }).then(users => {
-        res.json(users);
+      // models.Pegawai.findAll({
+      //   where: {
+      //     nip: 1889374
+      //   },
+      //   include: [models.Type]
+      // }).then(dosen => res.json(dosen));
+
+      const nim = 'f1e115035';
+
+      const deletedRecord = models.Mahasiswa.findOne({
+        where: { nim }
+      }).then(mahasiswa => {
+        const dlt = mahasiswa;
       });
+
+      res.json(deletedRecord);
+
+      // models.Mahasiswa.destroy({
+      //   where: {
+      //     nim
+      //   }
+      // }).then(mahasiswa => res.json(deletedRecord));
     });
 
     app.listen(8000, err => {
