@@ -5,6 +5,19 @@ export default function() {
     nim: 'f1e115035',
     nama: 'Daniel Pardamean',
     password: 'supersecret'
+  }).then(async mahasiswa => {
+    const bimbingan = await models.Bimbingan.create({
+      nim: mahasiswa.nim,
+      judul: 'Melakukan skripsi'
+    });
+    await mahasiswa.setBimbingan(bimbingan);
+
+    const koreksi = await models.Koreksi.create({
+      idBimbingan: bimbingan.id,
+      judul: 'Koreksi Pertama: Judul'
+    });
+
+    bimbingan.setKoreksi(koreksi);
   });
 
   models.Mahasiswa.create({

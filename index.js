@@ -54,7 +54,13 @@ models.sequelize
       //   message: 'Selamat datang di website skripsi online!'
       // });
       models.Mahasiswa.findAll({
-        include: [{ model: models.Pegawai, as: 'team_pembimbing' }]
+        include: [
+          { model: models.Pegawai, as: 'team_pembimbing' },
+          {
+            model: models.Bimbingan,
+            include: [{ model: models.Koreksi, as: 'koreksi' }]
+          }
+        ]
       }).then(mahasiswa => res.json(mahasiswa));
     });
 
@@ -65,4 +71,5 @@ models.sequelize
         console.log('Server is running ...');
       }
     });
-  });
+  })
+  .catch(err => console.log(err));

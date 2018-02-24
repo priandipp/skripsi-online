@@ -64,6 +64,10 @@ export default (sequelize, DataTypes) => {
       foreignKey: 'nim',
       as: 'team_pembimbing'
     });
+
+    Mahasiswa.hasOne(models.Bimbingan, {
+      foreignKey: 'nim'
+    });
   };
 
   return Mahasiswa;

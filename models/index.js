@@ -8,6 +8,8 @@ const models = {
   Mahasiswa: sequelize.import('./mahasiswa'),
   Pegawai: sequelize.import('./pegawai'),
   Type: sequelize.import('./type'),
+  Bimbingan: sequelize.import('./bimbingan'),
+  Koreksi: sequelize.import('./koreksi'),
   Pembimbing: sequelize.import('./pembimbing')
 };
 
