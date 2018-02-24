@@ -1,5 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import multer from 'multer';
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
 import { makeExecutableSchema } from 'graphql-tools';
 
@@ -7,6 +8,7 @@ import typeDefs from './schema';
 import resolvers from './resolvers';
 
 import models from './models';
+import seeder from './seeder';
 
 const schema = makeExecutableSchema({
   typeDefs,
@@ -14,6 +16,17 @@ const schema = makeExecutableSchema({
 });
 
 const app = express();
+
+// const storage = multer.diskStorage({
+//   destination: './public/upload',
+//   filename: (req, file, callback) => {
+//     callback(null, file.originalname);
+//   }
+// });
+
+// const upload = multer({
+//   storage
+// }).single('name-property');
 
 const graphqlEndpoint = '/graphql';
 
@@ -34,46 +47,15 @@ models.sequelize
     force: true
   })
   .then(() => {
-    models.Mahasiswa.create({
-      nim: 'f1e115035',
-      nama: 'Daniel Pardamean',
-      password: 'supersecret'
-    });
-
-    models.Pegawai.create({
-      nip: '018893749018893749',
-      nama: 'Daniel Joko',
-      password: 'supersecret',
-      type_id: 1
-    });
-
-    models.Type.create({
-      name: 'Dosen'
-    });
+    seeder();
 
     app.get('/', (req, res) => {
-      // models.Pegawai.findAll({
-      //   where: {
-      //     nip: 1889374
-      //   },
-      //   include: [models.Type]
-      // }).then(dosen => res.json(dosen));
-
-      const nim = 'f1e115035';
-
-      const deletedRecord = models.Mahasiswa.findOne({
-        where: { nim }
-      }).then(mahasiswa => {
-        const dlt = mahasiswa;
-      });
-
-      res.json(deletedRecord);
-
-      // models.Mahasiswa.destroy({
-      //   where: {
-      //     nim
-      //   }
-      // }).then(mahasiswa => res.json(deletedRecord));
+      // res.json({
+      //   message: 'Selamat datang di website skripsi online!'
+      // });
+      models.Mahasiswa.findAll({
+        include: [{ model: models.Pegawai, as: 'team_pembimbing' }]
+      }).then(mahasiswa => res.json(mahasiswa));
     });
 
     app.listen(8000, err => {

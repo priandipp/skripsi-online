@@ -1,25 +1,32 @@
 export default {
   Query: {
     allMahasiswa: (parent, args, { models }, info) =>
-      models.Mahasiswa.findAll(),
-    getMahasiswa: (parent, args, { models }, info) => {
-      const { nim } = args;
-      return models.Mahasiswa.findOne({ where: { nim } });
-    },
-
-    allPegawai: (parent, args, { models }, info) =>
-      models.Pegawai.findAll({
-        include: [models.Type]
+      models.Mahasiswa.findAll({
+        include: [{ model: models.Pegawai, as: 'team_pembimbing' }]
       }),
-    getPegawai: (parent, args, { models }, info) => {
-      const { nip } = args;
-      return models.Pegawai.findOne({
+    getMahasiswa: (parent, { nim }, { models }, info) =>
+      models.Mahasiswa.findOne({ where: { nim } }),
+    allPegawai: (parent, { typeId }, { models }, info) => {
+      let where;
+      if (typeId != null) {
+        where = {
+          typeId
+        };
+      } else {
+        where = {};
+      }
+      return models.Pegawai.findAll({
+        where,
+        include: [models.Type]
+      });
+    },
+    getPegawai: (parent, { nip }, { models }, info) =>
+      models.Pegawai.findOne({
         where: {
           nip
         },
         include: [models.Type]
-      });
-    }
+      })
   },
   Mutation: {
     createMahasiswa: (parent, args, { models }) =>

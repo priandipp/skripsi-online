@@ -23,8 +23,8 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.STRING(40),
         validate: {
           len: {
-            args: [10, 40],
-            msg: 'Nama harus memiliki 10-40 karakter'
+            args: [4, 40],
+            msg: 'Nama harus memiliki 4-40 karakter'
           }
         }
       },
@@ -42,7 +42,11 @@ export default (sequelize, DataTypes) => {
     },
     {
       timestamps: false,
-      freezeTableName: true
+      freezeTableName: true,
+      name: {
+        singular: 'mahasiswa',
+        plural: 'mahasiswa'
+      }
     }
   );
 
@@ -54,7 +58,13 @@ export default (sequelize, DataTypes) => {
     );
   });
 
-  Mahasiswa.associate = models => {};
+  Mahasiswa.associate = models => {
+    Mahasiswa.belongsToMany(models.Pegawai, {
+      through: models.Pembimbing,
+      foreignKey: 'nim',
+      as: 'team_pembimbing'
+    });
+  };
 
   return Mahasiswa;
 };

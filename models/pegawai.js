@@ -19,8 +19,8 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.STRING(40),
         validate: {
           len: {
-            args: [10, 40],
-            msg: 'Nama harus memiliki 10-40 karakter'
+            args: [4, 40],
+            msg: 'Nama harus memiliki4-40 karakter'
           }
         }
       },
@@ -31,7 +31,7 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         defaultValue: 'default.png'
       },
-      type_id: {
+      typeId: {
         type: DataTypes.INTEGER
       }
     },
@@ -39,15 +39,20 @@ export default (sequelize, DataTypes) => {
       timestamps: false,
       freezeTableName: true,
       defaultScope: {
-        attributes: { exclude: ['type_id'] }
+        attributes: { exclude: ['typeId'] }
       }
     }
   );
 
   Pegawai.associate = models => {
     Pegawai.belongsTo(models.Type, {
-      foreignKey: 'type_id',
+      foreignKey: 'typeId',
       constraints: false
+    });
+
+    Pegawai.belongsToMany(models.Mahasiswa, {
+      through: models.Pembimbing,
+      foreignKey: 'nip'
     });
   };
 
