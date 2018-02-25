@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import { Grid, Button, Checkbox, Form } from 'semantic-ui-react';
 
-class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      a: '1'
-    };
-  }
+class Login extends Component {
+  login = () => {
+    this.props.history.push('/daftar');
+  };
 
   render() {
     return (
@@ -51,7 +48,7 @@ height: 100%;
                   label="Pegawai"
                 />
               </Form.Field>
-              <Button fluid size="small" color="facebook">
+              <Button fluid size="small" color="facebook" onClick={this.login}>
                 Login
               </Button>
             </Form>
@@ -62,4 +59,4 @@ height: 100%;
   }
 }
 
-export default App;
+export default Login;
