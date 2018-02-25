@@ -1,11 +1,5 @@
 export default {
   Query: {
-    allMahasiswa: (parent, args, { models }, info) =>
-      models.Mahasiswa.findAll({
-        include: [{ model: models.Pegawai, as: 'team_pembimbing' }]
-      }),
-    getMahasiswa: (parent, { nim }, { models }, info) =>
-      models.Mahasiswa.findOne({ where: { nim } }),
     allPegawai: (parent, { typeId }, { models }, info) => {
       let where;
       if (typeId != null) {
@@ -29,26 +23,6 @@ export default {
       })
   },
   Mutation: {
-    createMahasiswa: (parent, args, { models }) =>
-      models.Mahasiswa.create(args),
-    deleteMahasiswa: async (parent, args, { models }, info) => {
-      const { nim } = args;
-
-      const mahasiswa = await models.Mahasiswa.findOne({
-        where: { nim }
-      });
-
-      const result = await models.Mahasiswa.destroy({
-        where: {
-          nim
-        }
-      })
-        .then(() => Object.assign(mahasiswa, { deleted: true }))
-        .catch(err => Object.assign(mahasiswa, { deleted: false }));
-
-      return result;
-    },
-
     createPegawai: (parent, args, { models }) =>
       models.Pegawai.create(args).then(pegawai => {
         const { nip } = pegawai.dataValues;

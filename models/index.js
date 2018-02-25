@@ -10,6 +10,7 @@ const models = {
   Type: sequelize.import('./type'),
   Bimbingan: sequelize.import('./bimbingan'),
   Koreksi: sequelize.import('./koreksi'),
+  HistoriKoreksi: sequelize.import('./historiKoreksi'),
   Pembimbing: sequelize.import('./pembimbing')
 };
 

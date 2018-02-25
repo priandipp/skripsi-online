@@ -16,11 +16,17 @@ export default (sequelize, DataTypes) => {
     },
     {
       timestamps: false,
-      freezeTableName: true
+      freezeTableName: true,
+      constraints: false
     }
   );
 
-  // Pembimbing.associate = models => {};
+  Pembimbing.associate = models => {
+    Pembimbing.belongsTo(models.Pegawai, {
+      foreignKey: 'nip',
+      as: 'pegawai'
+    });
+  };
 
   return Pembimbing;
 };

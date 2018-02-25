@@ -3,7 +3,8 @@ export default (sequelize, DataTypes) => {
     'koreksi',
     {
       idBimbingan: {
-        type: DataTypes.STRING
+        type: DataTypes.INTEGER,
+        allowNull: false
       },
       judul: {
         type: DataTypes.STRING
@@ -14,7 +15,12 @@ export default (sequelize, DataTypes) => {
     }
   );
 
-  Koreksi.associate = models => {};
+  Koreksi.associate = models => {
+    Koreksi.hasMany(models.HistoriKoreksi, {
+      foreignKey: 'idKoreksi',
+      as: 'histori'
+    });
+  };
 
   return Koreksi;
 };

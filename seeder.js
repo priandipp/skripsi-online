@@ -10,14 +10,31 @@ export default function() {
       nim: mahasiswa.nim,
       judul: 'Melakukan skripsi'
     });
+
     await mahasiswa.setBimbingan(bimbingan);
 
     const koreksi = await models.Koreksi.create({
-      idBimbingan: bimbingan.id,
+      idBimbingan: 1,
       judul: 'Koreksi Pertama: Judul'
     });
 
-    bimbingan.setKoreksi(koreksi);
+    const koreksi2 = await models.Koreksi.create({
+      idBimbingan: 1,
+      judul: 'Koreksi Pertama: Kata Pengantar'
+    });
+
+    await models.HistoriKoreksi.bulkCreate([
+      {
+        idKoreksi: koreksi.id,
+        judul: 'Menambahkan kop surat',
+        dokumen: 'file01.doc'
+      },
+      {
+        idKoreksi: koreksi.id,
+        judul: 'Menambahkan kop surat 2',
+        dokumen: 'file01.doc'
+      }
+    ]);
   });
 
   models.Mahasiswa.create({

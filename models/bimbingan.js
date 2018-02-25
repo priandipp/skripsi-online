@@ -17,7 +17,7 @@ export default (sequelize, DataTypes) => {
 
   Bimbingan.associate = models => {
     Bimbingan.hasMany(models.Koreksi, {
-      foreignKey: 'id',
+      foreignKey: 'idBimbingan',
       as: 'koreksi'
     });
   };

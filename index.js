@@ -1,14 +1,21 @@
+import path from 'path';
 import express from 'express';
 import bodyParser from 'body-parser';
-import multer from 'multer';
+// import multer from 'multer';
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
 import { makeExecutableSchema } from 'graphql-tools';
-
-import typeDefs from './schema';
-import resolvers from './resolvers';
+import { fileLoader, mergeTypes, mergeResolvers } from 'merge-graphql-schemas';
 
 import models from './models';
 import seeder from './seeder';
+
+const typeDefs = mergeTypes(fileLoader(path.join(__dirname, './schemas')));
+
+const resolvers = mergeResolvers(
+  fileLoader(path.join(__dirname, './resolvers'), {
+    extensions: ['.js']
+  })
+);
 
 const schema = makeExecutableSchema({
   typeDefs,
@@ -49,16 +56,23 @@ models.sequelize
   .then(() => {
     seeder();
 
-    app.get('/', (req, res) => {
+    app.get('/', async (req, res) => {
       // res.json({
       //   message: 'Selamat datang di website skripsi online!'
       // });
+
       models.Mahasiswa.findAll({
         include: [
           { model: models.Pegawai, as: 'team_pembimbing' },
           {
             model: models.Bimbingan,
-            include: [{ model: models.Koreksi, as: 'koreksi' }]
+            include: [
+              {
+                model: models.Koreksi,
+                as: 'koreksi',
+                include: [{ model: models.HistoriKoreksi, as: 'histori' }]
+              }
+            ]
           }
         ]
       }).then(mahasiswa => res.json(mahasiswa));
