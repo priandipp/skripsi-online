@@ -11,6 +11,7 @@ const models = {
   Bimbingan: sequelize.import('./bimbingan'),
   Koreksi: sequelize.import('./koreksi'),
   HistoriKoreksi: sequelize.import('./historiKoreksi'),
+  KoreksiDosen: sequelize.import('./koreksiDosen'),
   Pembimbing: sequelize.import('./pembimbing')
 };
 

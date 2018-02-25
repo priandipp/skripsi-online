@@ -5,4 +5,5 @@ type Histori {
     dokumen: String!
     createdAt: String!
     updatedAt: String!
+    koreksiDosen: [KoreksiDosen!]
 }`;
