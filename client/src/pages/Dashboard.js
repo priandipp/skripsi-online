@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Navbar from './Navbar';
-import Main from './Main';
+import Navbar from '../components/Navbar';
+import Main from '../components/Main';
 
 class Dashboard extends Component {
   login = () => {
