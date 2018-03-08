@@ -7,7 +7,8 @@ module.exports = {
         "jsx-a11y/href-no-hash": 0,
         "react/no-string-refs": 0,
         "no-restricted-syntax": 0,
-        "guard-for-in": 0
+        "guard-for-in": 0,
+        "react/no-array-index-key": 0,
     },
     globals: {
         document: 1

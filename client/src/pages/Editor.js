@@ -1,25 +1,25 @@
 import React, { Component } from 'react';
-import { Stage, Layer, Image as KonvaImage } from 'react-konva';
+import { Stage, Layer, Image as KonvaImage, Line } from 'react-konva';
 import loadImage from 'image-promise';
-import Konva from 'konva';
 
 export default class Editor extends Component {
   constructor() {
     super();
     this.state = {
       image: null,
+      imageScale: { x: 1, y: 1 },
+      imagePosition: {},
       points: [],
-      lines: [],
-      line: null,
       pen: false,
-      onMouseDown: false
+      onMouseDown: false,
+      stackOfPoints: []
     };
   }
 
   componentDidMount() {
     loadImage(
-      // img
-      'http://underthebridge.co.uk/wp-content/uploads/2014/03/Example-main-image1.jpg'
+      'https://andriyudhistira.files.wordpress.com/2011/05/tugas-3-bahasa-indonesia_3.png'
+      // 'https://www.planwallpaper.com/static/images/HD-Wallpapers1_FOSmVKg.jpeg'
     ).then(image => {
       // image.width = window.innerWidth;
       // image.height = window.innerHeight;
@@ -29,38 +29,17 @@ export default class Editor extends Component {
     });
   }
 
-  drawLine(points, stage) {
-    const { editableLayer } = this.refs;
-
-    const line = new Konva.Line({
-      points,
-      stroke: '#45cc34',
-      strokeWidth: 12,
-      lineCap: 'round',
-      lineJoin: 'round',
-      draggable: true
-    });
-
-    editableLayer.add(line);
-    stage.add(editableLayer);
-    return line;
-  }
-
   stageOnMouseUp = () => {
-    const { editableLayer } = this.refs;
-    const { lines, line, pen } = this.state;
+    const { points } = this.state;
 
-    if (pen) {
-      lines.push(line);
-      editableLayer.destroyChildren();
-      for (const index in lines) {
-        editableLayer.add(lines[index]);
-      }
-    }
+    let { stackOfPoints } = this.state;
+
+    stackOfPoints = [...stackOfPoints, points];
 
     this.setState({
       points: [],
-      onMouseDown: false
+      onMouseDown: false,
+      stackOfPoints
     });
   };
 
@@ -71,16 +50,22 @@ export default class Editor extends Component {
   };
 
   stageOnMouseMove = e => {
-    const { onMouseDown, pen } = this.state;
+    this.setState({
+      mousePosition: e.currentTarget.getPointerPosition()
+    });
+    const { onMouseDown, pen, imageScale, imagePosition } = this.state;
+    // ambil posisi mouse
+    const { offsetX, offsetY } = e.evt;
+
     if (pen && onMouseDown) {
-      // ambil posisi mouse
-      const { offsetX, offsetY } = e.evt;
       // masukkan ke state points untuk penggambaran line
-      const points = [...this.state.points, offsetX, offsetY];
-      const line = this.drawLine(points, e.currentTarget);
+      const points = [
+        ...this.state.points,
+        offsetX / imageScale.x,
+        offsetY / imageScale.y
+      ];
 
       this.setState({
-        line,
         points
       });
     }
@@ -94,20 +79,86 @@ export default class Editor extends Component {
     });
   };
 
+  zoomInButtonClicked = () => {
+    let { imageScale } = this.state;
+
+    imageScale = {
+      x: imageScale.x + 0.25,
+      y: imageScale.y + 0.25
+    };
+
+    this.setState({
+      imageScale
+    });
+  };
+
+  zoomOutButtonClicked = () => {
+    let { imageScale } = this.state;
+
+    imageScale = {
+      x: imageScale.x - 0.25,
+      y: imageScale.y - 0.25
+    };
+
+    this.setState({
+      imageScale
+    });
+  };
+
   render() {
     return (
       <div>
+        <span>
+          {`mouse position: ${JSON.stringify(this.state.mousePosition)}`}
+        </span>
         <Stage
-          height={window.innerHeight}
+          ref="canvasStage"
+          height={window.innerHeight - 60}
           width={window.innerWidth}
           onMouseUp={this.stageOnMouseUp}
           onMouseDown={this.stageOnMouseDown}
           onMouseMove={this.stageOnMouseMove}
         >
           <Layer>
-            <KonvaImage ref="image" image={this.state.image} />
+            <KonvaImage
+              scale={this.state.imageScale}
+              ref="image"
+              image={this.state.image}
+              draggable={!this.state.pen}
+              onDragMove={e => {
+                const { x, y } = e.target._lastPos;
+                this.setState({
+                  imagePosition: {
+                    x,
+                    y
+                  }
+                });
+              }}
+              onMouseMove={e =>
+                console.log('image', e.target.attrs.image.offsetLeft)
+              }
+              stroke="red"
+              strokeWidth={12}
+            />
           </Layer>
-          <Layer ref="editableLayer" onDragStart={e => console.log(e)} />
+          <Layer
+            x={this.state.imagePosition.x}
+            y={this.state.imagePosition.y}
+            scale={this.state.imageScale}
+            stroke="blue"
+            strokeWidth={5}
+          >
+            {this.state.stackOfPoints.map((points, index) => (
+              <Line
+                points={points}
+                key={index}
+                stroke="red"
+                strokeWidth={5}
+                draggable
+              />
+            ))}
+            <Line points={this.state.points} stroke="red" strokeWidth={5} />
+          </Layer>
         </Stage>
         <div className="columns">
           <div className="column">
@@ -117,6 +168,12 @@ export default class Editor extends Component {
               onClick={this.penButtonClicked}
             >
               Pen
+            </button>
+            <button className="button" onClick={this.zoomInButtonClicked}>
+              Zoom In
+            </button>
+            <button className="button" onClick={this.zoomOutButtonClicked}>
+              Zoom Out
             </button>
           </div>
         </div>
