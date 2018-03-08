@@ -8,7 +8,10 @@ export default class Editor extends Component {
     this.state = {
       image: null,
       imageScale: { x: 1, y: 1 },
-      imagePosition: {},
+      imagePosition: {
+        x: 0,
+        y: 0
+      },
       points: [],
       pen: false,
       onMouseDown: false,
@@ -21,8 +24,11 @@ export default class Editor extends Component {
       'https://andriyudhistira.files.wordpress.com/2011/05/tugas-3-bahasa-indonesia_3.png'
       // 'https://www.planwallpaper.com/static/images/HD-Wallpapers1_FOSmVKg.jpeg'
     ).then(image => {
-      // image.width = window.innerWidth;
-      // image.height = window.innerHeight;
+      const windowHeight = window.innerHeight - 60;
+      const scale = windowHeight / image.height;
+      image.height = windowHeight;
+      image.width = window.innerWidth * scale;
+
       this.setState({
         image
       });
@@ -50,9 +56,6 @@ export default class Editor extends Component {
   };
 
   stageOnMouseMove = e => {
-    this.setState({
-      mousePosition: e.currentTarget.getPointerPosition()
-    });
     const { onMouseDown, pen, imageScale, imagePosition } = this.state;
     // ambil posisi mouse
     const { offsetX, offsetY } = e.evt;
@@ -61,8 +64,8 @@ export default class Editor extends Component {
       // masukkan ke state points untuk penggambaran line
       const points = [
         ...this.state.points,
-        offsetX / imageScale.x,
-        offsetY / imageScale.y
+        (offsetX + -imagePosition.x) / imageScale.x,
+        (offsetY + -imagePosition.y) / imageScale.y
       ];
 
       this.setState({
@@ -108,11 +111,7 @@ export default class Editor extends Component {
   render() {
     return (
       <div>
-        <span>
-          {`mouse position: ${JSON.stringify(this.state.mousePosition)}`}
-        </span>
         <Stage
-          ref="canvasStage"
           height={window.innerHeight - 60}
           width={window.innerWidth}
           onMouseUp={this.stageOnMouseUp}
@@ -126,7 +125,8 @@ export default class Editor extends Component {
               image={this.state.image}
               draggable={!this.state.pen}
               onDragMove={e => {
-                const { x, y } = e.target._lastPos;
+                const { x, y } = e.target.attrs;
+
                 this.setState({
                   imagePosition: {
                     x,
@@ -134,9 +134,6 @@ export default class Editor extends Component {
                   }
                 });
               }}
-              onMouseMove={e =>
-                console.log('image', e.target.attrs.image.offsetLeft)
-              }
               stroke="red"
               strokeWidth={12}
             />
