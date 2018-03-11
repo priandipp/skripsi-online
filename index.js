@@ -1,12 +1,21 @@
+import path from 'path';
 import express from 'express';
 import bodyParser from 'body-parser';
+// import multer from 'multer';
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
 import { makeExecutableSchema } from 'graphql-tools';
-
-import typeDefs from './schema';
-import resolvers from './resolvers';
+import { fileLoader, mergeTypes, mergeResolvers } from 'merge-graphql-schemas';
 
 import models from './models';
+import seeder from './seeder';
+
+const typeDefs = mergeTypes(fileLoader(path.join(__dirname, './Schemas')));
+
+const resolvers = mergeResolvers(
+  fileLoader(path.join(__dirname, './Resolvers'), {
+    extensions: ['.js']
+  })
+);
 
 const schema = makeExecutableSchema({
   typeDefs,
@@ -14,6 +23,17 @@ const schema = makeExecutableSchema({
 });
 
 const app = express();
+
+// const storage = multer.diskStorage({
+//   destination: './public/upload',
+//   filename: (req, file, callback) => {
+//     callback(null, file.originalname);
+//   }
+// });
+
+// const upload = multer({
+//   storage
+// }).single('name-property');
 
 const graphqlEndpoint = '/graphql';
 
@@ -23,7 +43,7 @@ app.use(
   graphqlExpress({
     schema,
     context: {
-      models
+      ...models
     }
   })
 );
@@ -31,33 +51,27 @@ app.use('/graphiql', graphiqlExpress({ endpointURL: graphqlEndpoint }));
 
 models.sequelize
   .sync({
-    force: true,
-    underscored: true
+    force: true
   })
   .then(() => {
-    models.Mahasiswa.create({
-      nim: 'f1e115035',
-      nama: 'Daniel Pardamean',
-      password: 'supersecret'
-    });
+    seeder();
 
-    models.Pegawai.create({
-      nip: '01889374',
-      nama: 'Daniel Joko',
-      password: 'supersecret',
-      type_id: 1
-    });
-
-    models.Type.create({
-      name: 'Dosen'
-    });
-
-    app.get('/', (req, res) => {
-      models.Type.findAll({
-        include: [models.Pegawai]
-      }).then(users => {
-        res.json(users);
-      });
+    app.get('/', async (req, res) => {
+      models.Mahasiswa.findAll({
+        include: [
+          { model: models.Pegawai, as: 'team_pembimbing' },
+          {
+            model: models.Bimbingan
+            // include: [
+            //   {
+            //     model: models.Koreksi,
+            //     as: 'koreksi',
+            //     include: [{ model: models.HistoriKoreksi, as: 'histori' }]
+            //   }
+            // ]
+          }
+        ]
+      }).then(mahasiswa => res.json(mahasiswa));
     });
 
     app.listen(8000, err => {
@@ -67,4 +81,5 @@ models.sequelize
         console.log('Server is running ...');
       }
     });
-  });
+  })
+  .catch(err => console.log(err));

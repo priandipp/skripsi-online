@@ -14,7 +14,7 @@ export default (sequelize, DataTypes) => {
 
   Type.associate = models => {
     Type.hasMany(models.Pegawai, {
-      foreignKey: 'type_id',
+      foreignKey: 'typeId',
       constraints: false
     });
   };
