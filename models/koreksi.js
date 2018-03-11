@@ -2,11 +2,13 @@ export default (sequelize, DataTypes) => {
   const Koreksi = sequelize.define(
     'koreksi',
     {
-      idBimbingan: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+      nip: {
+        type: DataTypes.STRING
       },
-      judul: {
+      keterangan: {
+        type: DataTypes.TEXT
+      },
+      dokumen: {
         type: DataTypes.STRING
       }
     },
@@ -15,11 +17,8 @@ export default (sequelize, DataTypes) => {
     }
   );
 
-  Koreksi.associate = models => {
-    Koreksi.hasMany(models.HistoriKoreksi, {
-      foreignKey: 'idKoreksi',
-      as: 'histori'
-    });
+  Koreksi.associate = ({ Pengajuan }) => {
+    Koreksi.belongsTo(Pengajuan);
   };
 
   return Koreksi;

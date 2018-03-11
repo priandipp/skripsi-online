@@ -1,44 +1,40 @@
 export default {
   Query: {
-    allMahasiswa: (parent, args, { models }, info) =>
-      models.Mahasiswa.findAll(),
-    getMahasiswa: (parent, { nim }, { models }, info) =>
-      models.Mahasiswa.findOne({ where: { nim } })
+    allMahasiswa: (parent, args, { Mahasiswa }) => Mahasiswa.findAll(),
+    getMahasiswa: (parent, { nim }, { Mahasiswa }) =>
+      Mahasiswa.findOne({ where: { nim } })
   },
   Mutation: {
-    createMahasiswa: (parent, args, { models }) =>
-      models.Mahasiswa.create(args),
-    deleteMahasiswa: async (parent, args, { models }, info) => {
+    createMahasiswa: (parent, args, { Mahasiswa }) => Mahasiswa.create(args),
+    deleteMahasiswa: async (parent, args, { Mahasiswa }) => {
       const { nim } = args;
 
-      const mahasiswa = await models.Mahasiswa.findOne({
+      const mahasiswa = await Mahasiswa.findOne({
         where: { nim }
       });
 
-      const result = await models.Mahasiswa.destroy({
+      return Mahasiswa.destroy({
         where: {
           nim
         }
       })
         .then(() => Object.assign(mahasiswa, { deleted: true }))
-        .catch(err => Object.assign(mahasiswa, { deleted: false }));
-
-      return result;
+        .catch(() => Object.assign(mahasiswa, { deleted: false }));
     }
   },
   Mahasiswa: {
-    team_pembimbing: ({ dataValues: { nim } }, args, { models }, info) =>
-      models.Pembimbing.findAll({
+    pembimbing: ({ dataValues: { nim } }, args, { Pembimbing, Pegawai }) =>
+      Pembimbing.findAll({
         where: { nim },
         include: [
           {
-            model: models.Pegawai,
+            model: Pegawai,
             as: 'pegawai'
           }
         ]
       }).map(val => val.pegawai),
-    bimbingan: async ({ dataValues: { nim } }, args, { models }, info) =>
-      models.Bimbingan.findOne({
+    bimbingan: ({ dataValues: { nim } }, args, { Bimbingan }) =>
+      Bimbingan.findOne({
         where: {
           nim
         }

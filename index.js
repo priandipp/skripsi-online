@@ -9,10 +9,10 @@ import { fileLoader, mergeTypes, mergeResolvers } from 'merge-graphql-schemas';
 import models from './models';
 import seeder from './seeder';
 
-const typeDefs = mergeTypes(fileLoader(path.join(__dirname, './schemas')));
+const typeDefs = mergeTypes(fileLoader(path.join(__dirname, './Schemas')));
 
 const resolvers = mergeResolvers(
-  fileLoader(path.join(__dirname, './resolvers'), {
+  fileLoader(path.join(__dirname, './Resolvers'), {
     extensions: ['.js']
   })
 );
@@ -43,7 +43,7 @@ app.use(
   graphqlExpress({
     schema,
     context: {
-      models
+      ...models
     }
   })
 );
@@ -57,22 +57,18 @@ models.sequelize
     seeder();
 
     app.get('/', async (req, res) => {
-      // res.json({
-      //   message: 'Selamat datang di website skripsi online!'
-      // });
-
       models.Mahasiswa.findAll({
         include: [
           { model: models.Pegawai, as: 'team_pembimbing' },
           {
-            model: models.Bimbingan,
-            include: [
-              {
-                model: models.Koreksi,
-                as: 'koreksi',
-                include: [{ model: models.HistoriKoreksi, as: 'histori' }]
-              }
-            ]
+            model: models.Bimbingan
+            // include: [
+            //   {
+            //     model: models.Koreksi,
+            //     as: 'koreksi',
+            //     include: [{ model: models.HistoriKoreksi, as: 'histori' }]
+            //   }
+            // ]
           }
         ]
       }).then(mahasiswa => res.json(mahasiswa));

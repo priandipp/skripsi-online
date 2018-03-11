@@ -34,10 +34,6 @@ export default (sequelize, DataTypes) => {
       profile_picture: {
         type: DataTypes.STRING,
         defaultValue: 'default.png'
-      },
-      allowedToSubmit: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
       }
     },
     {
@@ -58,14 +54,14 @@ export default (sequelize, DataTypes) => {
     );
   });
 
-  Mahasiswa.associate = models => {
-    Mahasiswa.belongsToMany(models.Pegawai, {
-      through: models.Pembimbing,
+  Mahasiswa.associate = ({ Bimbingan, Pegawai, Pembimbing }) => {
+    Mahasiswa.belongsToMany(Pegawai, {
+      through: Pembimbing,
       foreignKey: 'nim',
       as: 'team_pembimbing'
     });
 
-    Mahasiswa.hasOne(models.Bimbingan, {
+    Mahasiswa.hasOne(Bimbingan, {
       foreignKey: 'nim'
     });
   };

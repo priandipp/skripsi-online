@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import { Stage, Layer, Image as KonvaImage, Line } from 'react-konva';
 import loadImage from 'image-promise';
+import FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import {
+  faPencilAlt,
+  faSearchPlus,
+  faSearchMinus
+} from '@fortawesome/fontawesome-free-solid';
 
 export default class Editor extends Component {
   constructor() {
@@ -21,13 +27,15 @@ export default class Editor extends Component {
 
   componentDidMount() {
     loadImage(
-      'https://andriyudhistira.files.wordpress.com/2011/05/tugas-3-bahasa-indonesia_3.png'
-      // 'https://www.planwallpaper.com/static/images/HD-Wallpapers1_FOSmVKg.jpeg'
+      // 'https://andriyudhistira.files.wordpress.com/2011/05/tugas-3-bahasa-indonesia_3.png'
+      'http://localhost:3000/tugas-3-bahasa-indonesia_3.png'
     ).then(image => {
       const windowHeight = window.innerHeight - 60;
       const scale = windowHeight / image.height;
       image.height = windowHeight;
       image.width = window.innerWidth * scale;
+      image.crossOrigin = 'anonymous';
+      console.log(image);
 
       this.setState({
         image
@@ -117,6 +125,13 @@ export default class Editor extends Component {
           onMouseUp={this.stageOnMouseUp}
           onMouseDown={this.stageOnMouseDown}
           onMouseMove={this.stageOnMouseMove}
+          onClick={e => {
+            e.currentTarget.toImage({
+              callback(image) {
+                console.log(image);
+              }
+            });
+          }}
         >
           <Layer>
             <KonvaImage
@@ -135,7 +150,7 @@ export default class Editor extends Component {
                 });
               }}
               stroke="red"
-              strokeWidth={12}
+              strokeWidth={5}
             />
           </Layer>
           <Layer
@@ -164,13 +179,13 @@ export default class Editor extends Component {
               className="button"
               onClick={this.penButtonClicked}
             >
-              Pen
+              <FontAwesomeIcon icon={faPencilAlt} />
             </button>
             <button className="button" onClick={this.zoomInButtonClicked}>
-              Zoom In
+              <FontAwesomeIcon icon={faSearchPlus} />
             </button>
             <button className="button" onClick={this.zoomOutButtonClicked}>
-              Zoom Out
+              <FontAwesomeIcon icon={faSearchMinus} />
             </button>
           </div>
         </div>

@@ -4,9 +4,18 @@ export default `
         nama: String!
         password: String!
         profile_picture: String
-        allowedToSubmit: Boolean
-        deleted: Boolean
-        team_pembimbing: [TeamPembimbing]
+        pembimbing: [Pegawai]
         bimbingan: Bimbingan
+        deleted: Boolean
+    }
+
+    type Query {
+        allMahasiswa: [Mahasiswa]
+        getMahasiswa(nim: String!): Mahasiswa
+    }
+
+    type Mutation {
+        createMahasiswa(nim: String!, nama: String!, password: String!, profile_picture: String): Mahasiswa!
+        deleteMahasiswa(nim: String!): Mahasiswa!
     }
 `;

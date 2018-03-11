@@ -1,10 +1,7 @@
 export default (sequelize, DataTypes) => {
-  const HistoriKoreksi = sequelize.define(
-    'historiKoreksi',
+  const Pengajuan = sequelize.define(
+    'pengajuan',
     {
-      idKoreksi: {
-        type: DataTypes.INTEGER
-      },
       judul: {
         type: DataTypes.STRING
       },
@@ -17,7 +14,10 @@ export default (sequelize, DataTypes) => {
     }
   );
 
-  HistoriKoreksi.associate = models => {};
+  Pengajuan.associate = ({ Bimbingan, Koreksi }) => {
+    Pengajuan.belongsTo(Bimbingan);
+    Pengajuan.hasMany(Koreksi);
+  };
 
-  return HistoriKoreksi;
+  return Pengajuan;
 };

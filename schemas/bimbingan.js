@@ -4,6 +4,15 @@ export default `
         judul: String!
         createdAt: String!
         updatedAt: String!
-        koreksi: [Koreksi]
+        pengajuan: [Pengajuan]
+    }
+
+    type Query {
+        allBimbingan: [Bimbingan],
+        bimbingan (nim: String!): Bimbingan
+    }
+
+    type Mutation {
+        updateBimbingan (id: Int!, judul: String!): Bimbingan
     }
 `;
