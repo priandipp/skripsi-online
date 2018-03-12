@@ -15,7 +15,8 @@ export default `
     }
 
     type Mutation {
-        createMahasiswa(nim: String!, nama: String!, password: String!, profile_picture: String): Mahasiswa!
+        createMahasiswa (nim: String!, nama: String!, password: String!, profile_picture: String): Mahasiswa!
+        ubahPassword (nim: String!, oldPassword: String!, newPassword: String!) : Mahasiswa!
         deleteMahasiswa(nim: String!): Mahasiswa!
     }
 `;

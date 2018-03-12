@@ -48,10 +48,10 @@ export default (sequelize, DataTypes) => {
 
   Mahasiswa.hook('beforeCreate', mahasiswa => {
     mahasiswa.dataValues.nim = mahasiswa.dataValues.nim.toUpperCase();
-    mahasiswa.dataValues.password = bcrypt.hashSync(
-      mahasiswa.dataValues.password,
-      8
-    );
+    // mahasiswa.dataValues.password = bcrypt.hashSync(
+    //   mahasiswa.dataValues.password,
+    //   8
+    // );
   });
 
   Mahasiswa.associate = ({ Bimbingan, Pegawai, Pembimbing }) => {

@@ -6,6 +6,19 @@ export default {
   },
   Mutation: {
     createMahasiswa: (parent, args, { Mahasiswa }) => Mahasiswa.create(args),
+    ubahPassword: async (
+      parent,
+      { nim, oldPassword, newPassword },
+      { Mahasiswa }
+    ) => {
+      const mahasiswa = await Mahasiswa.findOne({
+        where: { nim, password: oldPassword }
+      });
+
+      return mahasiswa.update({
+        password: newPassword
+      });
+    },
     deleteMahasiswa: async (parent, { nim }, { Mahasiswa }) => {
       const mahasiswa = await Mahasiswa.findOne({
         where: { nim }
