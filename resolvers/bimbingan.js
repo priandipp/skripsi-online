@@ -7,6 +7,12 @@ export default {
       })
   },
   Mutation: {
+    createBimbingan: (parent, { nim, judul, dokumen }, { Bimbingan }) =>
+      Bimbingan.create({
+        nim,
+        judul,
+        dokumen
+      }),
     updateBimbingan: async (parent, { id, judul }, { Bimbingan }) => {
       const bimbingan = await Bimbingan.findOne({
         where: {
@@ -14,6 +20,19 @@ export default {
         }
       });
       return bimbingan.update({ judul });
+    },
+    deleteBimbingan: async (parent, { id }, { Bimbingan }) => {
+      const bimbingan = await Bimbingan.findOne({
+        where: { id }
+      });
+
+      return Bimbingan.destroy({
+        where: {
+          id
+        }
+      })
+        .then(() => Object.assign(bimbingan, { deleted: true }))
+        .catch(() => Object.assign(bimbingan, { deleted: false }));
     }
   },
   Bimbingan: {

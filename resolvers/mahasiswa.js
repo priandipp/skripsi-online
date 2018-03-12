@@ -6,9 +6,7 @@ export default {
   },
   Mutation: {
     createMahasiswa: (parent, args, { Mahasiswa }) => Mahasiswa.create(args),
-    deleteMahasiswa: async (parent, args, { Mahasiswa }) => {
-      const { nim } = args;
-
+    deleteMahasiswa: async (parent, { nim }, { Mahasiswa }) => {
       const mahasiswa = await Mahasiswa.findOne({
         where: { nim }
       });
