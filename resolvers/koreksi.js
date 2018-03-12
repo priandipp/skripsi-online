@@ -29,6 +29,19 @@ export default {
         keterangan,
         dokumen
       });
+    },
+    deleteKoreksi: async (parent, { id }, { Koreksi }) => {
+      const koreksi = await Koreksi.findOne({
+        where: { id }
+      });
+
+      return Koreksi.destroy({
+        where: {
+          id
+        }
+      })
+        .then(() => Object.assign(koreksi, { deleted: true }))
+        .catch(() => Object.assign(koreksi, { deleted: false }));
     }
   }
 };

@@ -5,6 +5,7 @@ export default `
         dokumen: String!
         createdAt: String!
         updatedAt: String!
+        deleted: Boolean
     }
 
     type Query {
@@ -15,5 +16,6 @@ export default `
     type Mutation {
         createKoreksi (nip: String! , keterangan: String!, dokumen: String!, pengajuanId: Int!): Koreksi
         updateKoreksi (id: Int!, keterangan: String!, dokumen: String!): Koreksi
+        deleteKoreksi (id: Int!): Koreksi
     }
 `;
