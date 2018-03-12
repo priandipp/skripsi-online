@@ -24,6 +24,19 @@ export default {
         judul,
         dokumen
       });
+    },
+    deletePengajuan: async (parent, { id }, { Pengajuan }) => {
+      const pengajuan = await Pengajuan.findOne({
+        where: { id }
+      });
+
+      return Pengajuan.destroy({
+        where: {
+          id
+        }
+      })
+        .then(() => Object.assign(pengajuan, { deleted: true }))
+        .catch(() => Object.assign(pengajuan, { deleted: false }));
     }
   },
   Pengajuan: {
